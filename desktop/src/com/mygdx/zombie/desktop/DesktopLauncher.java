@@ -12,6 +12,9 @@ import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -55,9 +58,7 @@ public class DesktopLauncher extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				if (lwjglAWTCanvas != null) {
-					lwjglAWTCanvas.stop();
-				}
+				if (lwjglAWTCanvas != null) lwjglAWTCanvas.stop();
 			}
 		});
 
@@ -66,6 +67,12 @@ public class DesktopLauncher extends JFrame {
 		createPanel();
 
 		lwjglAWTCanvas = new LwjglAWTCanvas(new ZombieEngine());
+		lwjglAWTCanvas.getCanvas().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent mouseEvent) {
+				lwjglAWTCanvas.getCanvas().requestFocus();
+			}
+		});
 		getContentPane().add(lwjglAWTCanvas.getCanvas(), BorderLayout.CENTER);
 
 	}

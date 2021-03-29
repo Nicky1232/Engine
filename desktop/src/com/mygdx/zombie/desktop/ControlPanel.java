@@ -1,5 +1,7 @@
 package com.mygdx.zombie.desktop;
 
+import com.mygdx.zombie.swingterface.Swingterface;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -28,21 +30,22 @@ import javax.swing.text.NumberFormatter;
 
 public class ControlPanel extends JPanel {
 
+
+    public static final String[] selectors = new String[] {
+            "Select", "Pipe", "Spike", "ColorBall", "Player"
+    };
+
+    public static final String[] labels = new String[] {
+            "X", "Y", "Width", "Height"
+    };
+
     private static final int PANEL_WIDTH = 150;
 
     // Used for libgdx communication
     private static final HashMap<String, JTextField> textFields = new HashMap<>(16);
     // Used for hide/show
     private static final HashMap<String, JPanel> optionPanels = new HashMap<>(8);
-    private static String currentSelection = "";
-
-    private static final String[] selectors = new String[] {
-            "Select", "Pipe", "Spike", "ColorBall", "Player"
-    };
-
-    private static final String[] labels = new String[] {
-            "X", "Y", "Width", "Height"
-    };
+    private static String currentSelection = "Select";
 
     private static final GridBagConstraints gridBagConstraints = new GridBagConstraints();
 
@@ -76,13 +79,13 @@ public class ControlPanel extends JPanel {
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
-                    currentSelection = button.getName();
                     System.out.println(currentSelection);
+                    currentSelection = button.getName();
+                    Swingterface.triggerSelectionUpdate(currentSelection);
                 }
             });
 
-            if(i == 0)
-                button.setSelected(true);
+            if(i == 0) button.setSelected(true);
 
             setGrid(0, i, GridBagConstraints.HORIZONTAL, 1f);
             group.add(button);
