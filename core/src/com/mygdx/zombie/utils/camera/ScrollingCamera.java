@@ -83,10 +83,10 @@ public class ScrollingCamera extends OrthographicCamera {
     }
 
     private void processKeyboardInput() {
-        if(Gdx.input.isKeyPressed(Input.Keys.W)) position.y += keyboardSensitivity;
-        if(Gdx.input.isKeyPressed(Input.Keys.S)) position.y -= keyboardSensitivity;
-        if(Gdx.input.isKeyPressed(Input.Keys.A)) position.x -= keyboardSensitivity;
-        if(Gdx.input.isKeyPressed(Input.Keys.D)) position.x += keyboardSensitivity;
+        if(Gdx.input.isKeyPressed(Input.Keys.W)) translate(new Vector2(0, keyboardSensitivity));
+        if(Gdx.input.isKeyPressed(Input.Keys.S)) translate(new Vector2(0, -keyboardSensitivity));
+        if(Gdx.input.isKeyPressed(Input.Keys.A)) translate(new Vector2(-keyboardSensitivity, 0));
+        if(Gdx.input.isKeyPressed(Input.Keys.D)) translate(new Vector2(keyboardSensitivity, 0));
     }
 
     private void processDragAction() {

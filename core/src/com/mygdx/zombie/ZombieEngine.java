@@ -3,7 +3,7 @@ package com.mygdx.zombie;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.mygdx.zombie.screen.Sandbox;
+import com.mygdx.zombie.screen.sandbox.Sandbox;
 
 public class ZombieEngine extends Game {
 

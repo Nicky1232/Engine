@@ -1,24 +1,20 @@
 package com.mygdx.zombie.desktop;
 
+import com.mygdx.zombie.swingterface.Status;
 import com.mygdx.zombie.swingterface.Swingterface;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.text.NumberFormat;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -26,7 +22,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.ListSelectionModel;
-import javax.swing.text.NumberFormatter;
 
 public class ControlPanel extends JPanel {
 
@@ -43,8 +38,7 @@ public class ControlPanel extends JPanel {
 
     // Used for libgdx communication
     private static final HashMap<String, JTextField> textFields = new HashMap<>(16);
-    // Used for hide/show
-    private static final HashMap<String, JPanel> optionPanels = new HashMap<>(8);
+    private static final HashMap<String, JToggleButton> selectionButtons = new HashMap<>(8);
     private static String currentSelection = "Select";
 
     private static final GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -65,6 +59,26 @@ public class ControlPanel extends JPanel {
         createList();
     }
 
+    void signalSelection() {
+        switch (Status.selection) {
+            case SELECTION:
+                selectionButtons.get("Select").setSelected(true);
+                break;
+            case PIPE:
+                selectionButtons.get("Pipe").setSelected(true);
+                break;
+            case SPIKE:
+                selectionButtons.get("Spike").setSelected(true);
+                break;
+            case PLAYER:
+                selectionButtons.get("Player").setSelected(true);
+                break;
+            case COLOR_BALL:
+                selectionButtons.get("ColorBall").setSelected(true);
+                break;
+        }
+    }
+
     private void createSelectionPanel() {
 
         JPanel wrapper = new JPanel(new GridBagLayout());
@@ -76,23 +90,20 @@ public class ControlPanel extends JPanel {
 
             final JToggleButton button = new JToggleButton(selectors[i]);
             button.setName(selectors[i]);
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent actionEvent) {
-                    System.out.println(currentSelection);
-                    currentSelection = button.getName();
-                    Swingterface.triggerSelectionUpdate(currentSelection);
-                }
+            button.addActionListener(actionEvent -> {
+                System.out.println(currentSelection);
+                currentSelection = button.getName();
+                Swingterface.triggerSelectionUpdate(currentSelection);
             });
 
-            if(i == 0) button.setSelected(true);
-
             setGrid(0, i, GridBagConstraints.HORIZONTAL, 1f);
+            selectionButtons.put(selectors[i], button);
             group.add(button);
             wrapper.add(button, gridBagConstraints);
 
         }
 
+        selectionButtons.get("Select").setSelected(true);
         add(wrapper);
     }
 
@@ -118,7 +129,7 @@ public class ControlPanel extends JPanel {
 
         }
 
-        optionPanels.put("Main", wrapper);
+//        optionPanels.put("Main", wrapper);
         add(wrapper);
 
     }
@@ -145,7 +156,7 @@ public class ControlPanel extends JPanel {
 
         }
 
-        optionPanels.put("Pipe", wrapper);
+//        optionPanels.put("Pipe", wrapper);
         add(wrapper);
 
     }
@@ -176,7 +187,7 @@ public class ControlPanel extends JPanel {
         gridBagConstraints.weighty = 0.01f;
         wrapper.add(deleteButton, gridBagConstraints);
 
-        optionPanels.put("List", wrapper);
+//        optionPanels.put("List", wrapper);
         add(wrapper);
     }
 

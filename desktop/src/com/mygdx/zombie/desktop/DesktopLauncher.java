@@ -4,36 +4,23 @@ import com.badlogic.gdx.backends.lwjgl.LwjglAWTCanvas;
 import com.mygdx.zombie.ZombieEngine;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
+
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
-import javax.swing.plaf.BorderUIResource;
 
 public class DesktopLauncher extends JFrame {
 
@@ -44,7 +31,7 @@ public class DesktopLauncher extends JFrame {
 	private static JMenuBar menuBar;
 	private static JToolBar toolBar;
 	private static JMenu menu;
-	private static JPanel panel;		//<< The panel on the left side
+	private static ControlPanel controlPanel;		//<< The panel on the left side
 
 	private static JMenuItem iExport, iImport, iExit;
 
@@ -69,6 +56,10 @@ public class DesktopLauncher extends JFrame {
 		lwjglAWTCanvas = new LwjglAWTCanvas(new ZombieEngine());
 		lwjglAWTCanvas.getCanvas().addMouseListener(new MouseAdapter() {
 			@Override
+			public void mouseClicked(MouseEvent mouseEvent) {
+				controlPanel.signalSelection();
+			}
+			@Override
 			public void mouseEntered(MouseEvent mouseEvent) {
 				lwjglAWTCanvas.getCanvas().requestFocus();
 			}
@@ -78,23 +69,15 @@ public class DesktopLauncher extends JFrame {
 	}
 
 	public static void main (String[] arg) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				new DesktopLauncher();
-			}
-		});
+		SwingUtilities.invokeLater(DesktopLauncher::new);
 	}
 
 	private void createPanel() {
 
 		Container container = getContentPane();
 
-		panel = new JPanel(new GridBagLayout());
-		panel.setBackground(Color.BLUE);
-
-		ControlPanel panel = new ControlPanel(PANEL_WIDTH);
-		container.add(panel, BorderLayout.WEST);
+		controlPanel = new ControlPanel(PANEL_WIDTH);
+		container.add(controlPanel, BorderLayout.WEST);
 
 	}
 

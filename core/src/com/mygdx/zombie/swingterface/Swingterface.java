@@ -1,6 +1,6 @@
 package com.mygdx.zombie.swingterface;
 
-import com.mygdx.zombie.screen.Sandbox;
+import com.mygdx.zombie.screen.sandbox.SandboxStatusManager;
 
 public class Swingterface {
 
@@ -22,7 +22,8 @@ public class Swingterface {
                 Status.selection = SelectButton.PLAYER;
                 break;
         }
-        Sandbox.StatusManager.signal();
-    }
 
+        SandboxStatusManager.signal();
+
+    }
 }
