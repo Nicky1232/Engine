@@ -1,5 +1,10 @@
 package com.mygdx.zombie.desktop;
 
+import com.mygdx.zombie.actors.ColorBall;
+import com.mygdx.zombie.actors.Pipe;
+import com.mygdx.zombie.actors.Player;
+import com.mygdx.zombie.actors.Spike;
+import com.mygdx.zombie.swingterface.Buffer;
 import com.mygdx.zombie.swingterface.Status;
 import com.mygdx.zombie.swingterface.Swingterface;
 
@@ -25,13 +30,22 @@ import javax.swing.ListSelectionModel;
 
 public class ControlPanel extends JPanel {
 
+    private static final String X = "X";
+    private static final String Y = "Y";
+    private static final String WIDTH = "Width";
+    private static final String HEIGHT = "Height";
+
 
     public static final String[] selectors = new String[] {
             "Select", "Pipe", "Spike", "ColorBall", "Player"
     };
 
+    public static final String[] common = new String[] {
+            X, Y, WIDTH, HEIGHT
+    };
+
     public static final String[] labels = new String[] {
-            "X", "Y", "Width", "Height"
+            "X_1", "Y_1", "Width_1", "Height_1"
     };
 
     private static final int PANEL_WIDTH = 150;
@@ -60,23 +74,49 @@ public class ControlPanel extends JPanel {
     }
 
     void signalSelection() {
-        switch (Status.selection) {
-            case SELECTION:
-                selectionButtons.get("Select").setSelected(true);
-                break;
-            case PIPE:
-                selectionButtons.get("Pipe").setSelected(true);
-                break;
-            case SPIKE:
-                selectionButtons.get("Spike").setSelected(true);
-                break;
-            case PLAYER:
-                selectionButtons.get("Player").setSelected(true);
-                break;
-            case COLOR_BALL:
-                selectionButtons.get("ColorBall").setSelected(true);
-                break;
+
+        if (Status.selection == null) {
+            selectionButtons.get("Select").setSelected(true);
+            clearAllFields();
+        } else if (Pipe.class.equals(Status.selection)) {
+            selectionButtons.get("Pipe").setSelected(true);
+        } else if (Spike.class.equals(Status.selection)) {
+            selectionButtons.get("Spike").setSelected(true);
+        } else if (Player.class.equals(Status.selection)) {
+            selectionButtons.get("Player").setSelected(true);
+        } else if (ColorBall.class.equals(Status.selection)) {
+            selectionButtons.get("ColorBall").setSelected(true);
         }
+
+        updateCommonData();
+
+    }
+
+    private void updateCommonData() {
+        Buffer buffer = Swingterface.getBuffer();
+        if(!buffer.isFlushed()) {
+            textFields.forEach((s, jTextField) -> {
+                switch (jTextField.getName()) {
+                    case X:
+                        jTextField.setText(String.valueOf(buffer.getCommon().x));
+                        break;
+                    case Y:
+                        jTextField.setText(String.valueOf(buffer.getCommon().y));
+                        break;
+                    case WIDTH:
+                        jTextField.setText(String.valueOf(buffer.getCommon().width));
+                        break;
+                    case HEIGHT:
+                        jTextField.setText(String.valueOf(buffer.getCommon().height));
+                        break;
+                }
+            });
+            Swingterface.flush();
+        }
+    }
+
+    private void clearAllFields() {
+        textFields.forEach((s, jTextField) -> jTextField.setText(""));
     }
 
     private void createSelectionPanel() {
@@ -113,19 +153,30 @@ public class ControlPanel extends JPanel {
         wrapper.setBorder(BorderFactory.createTitledBorder("Common Options"));
         wrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, PANEL_WIDTH));
 
-        for(int i = 0; i < labels.length; i++) {
+        for(int i = 0; i < common.length; i++) {
 
-            String text = labels[i];
+            String text = common[i];
 
             setGrid(0, i, GridBagConstraints.HORIZONTAL, 0.25f);
             JLabel label = new JLabel(text + ":");
+            label.setName(common[i]);
             wrapper.add(label, gridBagConstraints);
 
             setGrid(1, i, GridBagConstraints.HORIZONTAL, 0.75f);
             JTextField input = new JTextField();
+            input.setName(common[i]);
+            input.addActionListener(actionEvent -> {
+                Buffer buffer = Swingterface.getBuffer();
+                buffer.setCommon(
+                        Float.parseFloat(textFields.get(X).getText()),
+                        Float.parseFloat(textFields.get(Y).getText()),
+                        Float.parseFloat(textFields.get(WIDTH).getText()),
+                        Float.parseFloat(textFields.get(HEIGHT).getText()));
+                Swingterface.triggerDataUpdate(buffer);
+            });
             wrapper.add(input, gridBagConstraints);
 
-            textFields.put(labels[i], input);
+            textFields.put(common[i], input);
 
         }
 
@@ -146,10 +197,12 @@ public class ControlPanel extends JPanel {
 
             setGrid(0, i, GridBagConstraints.HORIZONTAL, 0.25f);
             JLabel label = new JLabel(text + ":");
+            label.setName(labels[i]);
             wrapper.add(label, gridBagConstraints);
 
             setGrid(1, i, GridBagConstraints.HORIZONTAL, 0.75f);
             JTextField input = new JTextField();
+            input.setName(labels[i]);
             wrapper.add(input, gridBagConstraints);
 
             textFields.put(labels[i], input);

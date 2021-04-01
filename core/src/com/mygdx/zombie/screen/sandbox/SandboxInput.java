@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.zombie.actors.Entity;
-import com.mygdx.zombie.swingterface.SelectButton;
 import com.mygdx.zombie.swingterface.Status;
 import com.mygdx.zombie.utils.camera.ScrollingCamera;
 
@@ -32,30 +31,28 @@ final class SandboxInput extends InputAdapter {
         Vector2 cursorWorldPosition =
                 viewport.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 
-        if(Status.selection == SelectButton.SELECTION) {
-
-            AtomicBoolean objectSelected = new AtomicBoolean(false);
-            entityMap.values().forEach((entities -> {
-                for(Entity entity : entities) {
-                    if (entity.overlaps((int) cursorWorldPosition.x, (int) cursorWorldPosition.y)) {
-                        SandboxStatusManager.mark(entity);
-                        objectSelected.set(true);
-                    }
+        AtomicBoolean objectSelected = new AtomicBoolean(false);
+        entityMap.values().forEach((entities -> {
+            for(Entity entity : entities) {
+                if (entity.overlaps((int) cursorWorldPosition.x, (int) cursorWorldPosition.y)) {
+                    SandboxStatusManager.mark(entity);
+                    objectSelected.set(true);
+                    Status.selection = Entity.getClass(entity);
                 }
-            }));
+            }
+        }));
 
-            if (!objectSelected.get()) {
-                if( SandboxStatusManager.object != null) {
+        if (!objectSelected.get()) {
+            if( SandboxStatusManager.object != null) {
+                if(SandboxStatusManager.isBoundToCursor) {
+                    SandboxStatusManager.addActor(entityMap);
+                } else {
                     SandboxStatusManager.object.setDrawBoundingRectangle(false);
                     SandboxStatusManager.object = null;
                     SandboxStatusManager.isBoundToCursor = false;
+                    Status.selection = null;
                 }
             }
-        }
-
-        if(Status.selection != SelectButton.SELECTION
-                && SandboxStatusManager.object != null) {
-            SandboxStatusManager.addActor(entityMap);
         }
 
         return true;

@@ -28,7 +28,7 @@ public class Spike extends Entity {
     }
 
     @Override
-    public void setPosition(int x, int y, boolean centered) {
+    public void setPosition(float x, float y, boolean centered) {
         super.setPosition(x, y, centered);
         shape.setPosition(boundingRectangle.x, boundingRectangle.y);
     }

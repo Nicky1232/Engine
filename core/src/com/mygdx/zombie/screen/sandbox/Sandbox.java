@@ -33,7 +33,7 @@ public final class Sandbox implements Screen {
 // New Bulgarian University (NBU)
 // Code I don't understand starts here
 ///////////////////////////////////////////////////////////////////////////////////
-    
+
     final HashMap<Class<? extends Entity>,
             Array<Entity>> entityMap = new HashMap<>();
 

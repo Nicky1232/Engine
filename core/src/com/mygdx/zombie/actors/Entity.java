@@ -42,7 +42,7 @@ public abstract class Entity {
         }
     }
 
-    public void setPosition(int x, int y, boolean centered) {
+    public void setPosition(float x, float y, boolean centered) {
         if(centered) {
             boundingRectangle.x = x - ((int)boundingRectangle.width >> 1);
             boundingRectangle.y = y - ((int)boundingRectangle.height >> 1);
@@ -50,6 +50,11 @@ public abstract class Entity {
             boundingRectangle.x = x;
             boundingRectangle.y = y;
         }
+    }
+
+    public void setSize(float width, float height) {
+        boundingRectangle.width  = width;
+        boundingRectangle.height = height;
     }
 
     public boolean overlaps(int x, int y) {
@@ -69,4 +74,13 @@ public abstract class Entity {
             shapeRenderer.setColor(temp);
         }
     }
+
+    public Rectangle getBoundingRectangle() {
+        return boundingRectangle;
+    }
+
+    public static Class<? extends Entity> getClass(Entity entity) {
+        return entity.getClass();
+    }
+
 }

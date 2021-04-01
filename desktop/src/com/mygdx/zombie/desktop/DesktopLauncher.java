@@ -56,6 +56,10 @@ public class DesktopLauncher extends JFrame {
 		lwjglAWTCanvas = new LwjglAWTCanvas(new ZombieEngine());
 		lwjglAWTCanvas.getCanvas().addMouseListener(new MouseAdapter() {
 			@Override
+			public void mouseReleased(MouseEvent mouseEvent) {
+				controlPanel.signalSelection();
+			}
+			@Override
 			public void mouseClicked(MouseEvent mouseEvent) {
 				controlPanel.signalSelection();
 			}

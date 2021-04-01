@@ -7,8 +7,9 @@ import com.mygdx.zombie.actors.ColorBall;
 import com.mygdx.zombie.actors.Entity;
 import com.mygdx.zombie.actors.Pipe;
 import com.mygdx.zombie.actors.Spike;
-import com.mygdx.zombie.swingterface.SelectButton;
+import com.mygdx.zombie.swingterface.Buffer;
 import com.mygdx.zombie.swingterface.Status;
+import com.mygdx.zombie.swingterface.Swingterface;
 
 import java.util.HashMap;
 
@@ -25,13 +26,13 @@ public final class SandboxStatusManager {
         if(object != null)
             object.setDrawBoundingRectangle(false);
 
-        if(Status.selection == SelectButton.SELECTION) {
+        if(Status.selection == null) {
             object = null;
-        } else if(Status.selection == SelectButton.PIPE) {
+        } else if(Status.selection == Pipe.class) {
             object = new Pipe(0, 0);
-        } else if(Status.selection == SelectButton.COLOR_BALL) {
+        } else if(Status.selection == ColorBall.class) {
             object = new ColorBall(0, 0);
-        } else if(Status.selection == SelectButton.SPIKE) {
+        } else if(Status.selection == Spike.class) {
             object = new Spike(0, 0);
         }
 
@@ -39,6 +40,15 @@ public final class SandboxStatusManager {
             object.setDrawBoundingRectangle(true);
             isBoundToCursor = true;
         }
+
+    }
+
+    public static void updateEntity(Buffer buffer) {
+
+        Buffer.Common common = buffer.getCommon();
+
+        object.setPosition(common.x, common.y, false);
+        object.setSize(common.width, common.height);
 
     }
 
@@ -62,7 +72,7 @@ public final class SandboxStatusManager {
             else if (object instanceof ColorBall)   entityMap.get(ColorBall.class).add(object);
             else if (object instanceof Spike)       entityMap.get(Spike.class).add(object);
 
-            Status.selection = SelectButton.SELECTION;
+            Status.selection = null;
             object = null;
         }
 
@@ -78,5 +88,6 @@ public final class SandboxStatusManager {
         isBoundToCursor = false;
 
         //Notify the Swing Interface
+        Swingterface.getBuffer().setCommon(object);
     }
 }
